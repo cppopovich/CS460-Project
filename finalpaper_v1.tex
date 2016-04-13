@@ -353,40 +353,97 @@ Tuscaloosa, Alabama 35404}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract
 \begin{abstract}
-
+We implement an algorithm for two robots to cooperatively hunt and capture a moving target.
+The hunters are given their distance to the target at regular intervals.
+They use the data to identify the target's location and path, then approach from both sides.
+We compare the alogorithm to a naive approach, where the hunters move directly towards the target's last known location.
 \end{abstract}
 
 % no keywords
 
 \section{Introduction}
-Our project is a variation on “Marco Polo”, a game in which one player attempts to find another using
-auditory cues. We are interested in a variation of this game with two AI-controlled hunters and a
-human-controlled target.
+Our project is a variation on Marco Polo, a game in which one player attempts to find another using auditory cues.
+We are interested in a variation of this game with two AI-controlled hunters and a human-controlled target.
+We will be comparing a simple cooperative algorithm for the hunters to a naive, direct approach.
 
 The two hunters and their prey will be set in a rectangular arena with obstacles scattered around.
-Periodically, the hunters will be told the distance between them and their prey. The hunters can locate
-the prey by triangulation, but will be required to path around obstacles and trap the prey. The human-
-controlled robot will have full information about the environment, but will be limited by the arena and
-the movements of the hunters.
+Periodically, the hunters will be told the distance between them and their prey.
+The hunters can locate the prey by triangulation, but will be required to path around obstacles and trap the prey.
+Capturing will be done by reaching the target within a small distance, to avoid collisions.
 
-\section{Algorithms}
+Algorithms for intercepting a moving target are of interest in many different areas.
+They range from security response and tracking wildlife to soccer and tracking inanimate objects.
+Our project would be most useful as a starting point for a problem involving a small number of mobile intercepting robots.
+Research is available for interception of a single target using a mobile robot, but there is significantly less data on intercepting with multiple robots.
+Additionally, many papers assume that the target is tracked using visual sensors, which gives more information to the hunters than our problem does.
 
-\subsection{Subsection Heading Here}
-Subsection text here.
+\section{Related Work}
 
+\subsection{Single Robot Tracking}
+The majority of algorithms for intercepting a moving target assume a single hunter robot.
+This approach can be seen in ``Vision-based interception'' \cite{freda}.
+This paper proposes the problem of tracking a ball using visual sensors on a mobile robot.
+A large part of the focus is on keeping the ball within the camera's view for easier tracking.
+The algorithm is very successful in tracking and intercepting the ball, but the assumptions made in the paper are significantly different from ours \cite{freda}.
+An important difference is the assumption of visual contact, which gives more information to the hunter and requires more data processing.
+The introduction of obstacles and a target that moves less linearly would likely cause the algorithm to fail.
 
-\section{Conclusion}
-The conclusion goes here.
+\subsection{Multiple Robot Exploration}
+An article ``Multi-Robot Collaboration for Robust Exploration'' perhaps provides a more useful algorithm for our problem \cite{rekleitis}.
+It proposes a two-robot localization and mapping system, which would prove useful for dealing with obstacles not on the map.
+Although there is no target for the robots, the cooperative abilities of the algorithm are interesting.
+The robots attempt to explore the most area while still remaining in range of each other \cite{rekleitis}.
+The general approach may be appropriate for capturing a target, but the specific algorithm will not work.
+However, if we required our hunters to map the area themselves, the algorithm would find use as an initial phase.
 
+\section{Approach}
+
+\subsection{Methods}
+Although other approaches have explored topics closely related to our problem, they are not quite the same.
+We intend to implement a simple and low cost algorithm that still predicts and pursues the target intelligently.
+The hunters will not have visual contact with the target, and will need to navigate around multiple obstacles to find the target.
+The most important difference is the addition of simple cooperation between the two hunter robots.
+Although the problem was inspired by a simple game, it could still yield interesting results for this particular niche.
+We intend to make use of the ``move base'' package in ROS to allow for a relatively simple algorithmic approach.
+
+\subsection{Locating the Prey}
+The hunters will be given the distance from each of them to the prey.
+By using triangulation, the position of the prey can be narrowed down to two possibilities.
+Then, by checking the most recent measurements, the hunters can decide which position the prey is in.
+We expect the position to be located quickly and with very few measurements.
+If the location is not found quickly enough in our testing, we may have each hunter move towards a different possible location.
+This would find the correct location by noting which robot is moving closer to the target.
+The problem can be made a bit more complex by adding noise.
+
+\subsection{Trapping the Prey}
+We will have two algorithms: one naive, and one complex.
+The naive algorithm will have both hunters pathing directly towards the last known position of the prey.
+The hunters will only cooperate in that they will avoid bumping into each other.
+We expect this to be inefficient, and on larger maps the hunters could fail to capture the target in a reasonable amount of time.
+Aside from locating the prey, we will only need ensure the robots can sense each other to avoid collisions.
+
+The worldy algorithm will have the two hunters attempt to surround the prey and approach from opposite sides.
+Once the location of the target has been found, further measurements easily give a straight line prediction of the target's velocity.
+Our algorithm will predict the target's future location, and have one hunter move ahead of that position.
+The other hunter will be directed to move behind the target.
+The robots will move progressively closer, eventually reaching capturing distance to the prey.
+We expect this algorithm to significantly improve on the naive algorithm.
+
+\subsection{Additional Considerations}
+For an unbiased comparison between the two algorithms, we will have the human move in a repeated pattern for both trials.
+However, an additional challenge we are interested in is how well an intelligent human can avoid the hunters.
+We would like to attempt to adjust the algorithm for this purpose, but needed modifications are not likely to become apparent until we implement the algorithm.
+The adjustments we can make in the time available to us are limited to minor modifications of the ``surround and close in'' algorithm.
+It may, for example, be useful for the robot in front of the target to remain still while the other hunter closes in.
+If there is an object between the foremost hunter and the target, remaining still momentarily would force the human to choose which direction to go first.
+Another possibility is to have the hunters avoid moving too far from each other.
+This could make the algorithm perform worse, but it would make it difficult for the target to pass between the robots.
+It requires modifying the algorithm in a nontrivial way, but it might also cause behavior as if a net were stretched between the hunters.
+We will most likely not implement this unless our algorithm is too simplistic for the final project.
 
 % references section
-\begin{thebibliography}{1}
-
-\bibitem{IEEEhowto:kopka}
-H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
-  0.5em minus 0.4em\relax Harlow, England: Addison-Wesley, 1999.
-
-\end{thebibliography}
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,final}
 
 % that's all folks
 \end{document}
