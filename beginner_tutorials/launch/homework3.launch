@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="stage_ros" name="hstage" type="stageros" args="$(find stage)/worlds/homework3.world"/>
+    <node pkg="beginner_tutorials" name="cmds" type="simplemoveStage.py"/>
+</launch>

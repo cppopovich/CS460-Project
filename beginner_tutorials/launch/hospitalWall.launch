@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="stage_ros" name="hstage" type="stageros" args="$(find stage)/worlds/homework2.world"/>
+    <node pkg="beginner_tutorials" name="cmds" type="wall_follow.py"/>
+    <node pkg="beginner_tutorials" name="scribe" type="logPos.py" />
+</launch>
