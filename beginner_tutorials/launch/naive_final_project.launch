@@ -1,0 +1,15 @@
+<launch>
+    <node pkg="stage_ros" name="hstage" type="stageros" args="$(find stage)/worlds/final_project_1.world"/>
+    <node pkg="beginner_tutorials" name="cmds" type="project_dist.py" required="true"/>
+    <node pkg="beginner_tutorials" name="cmds" type="project_naive.py" required="true"/>
+    <include file="$(find nav_bundle)/launch/amcl_pioneer.launch"/>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find pioneer_2dnav)/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find pioneer_2dnav)/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find pioneer_2dnav)/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find pioneer_2dnav)/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find pioneer_2dnav)/base_local_planner_params.yaml" command="load" />
+    </node>
+    <node pkg="rviz" type="rviz" name="visulization"/>
+    <!--<node pkg="beginner_tutorials" name="scribe" type="logPos.py" />-->
+</launch>
