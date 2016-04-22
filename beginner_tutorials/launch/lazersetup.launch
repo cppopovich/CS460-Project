@@ -1,0 +1,6 @@
+<launch>	
+	<master auto="start"/>
+	<include file="$(find p2os_launch)/launch/amcl.launch" />
+	<node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node"/>
+	
+</launch>

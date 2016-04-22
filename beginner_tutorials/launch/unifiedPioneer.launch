@@ -1,0 +1,47 @@
+<launch>
+	<node pkg="p2os_driver" type="p2os_driver" name="p2os_driver">
+		<param name="port" type="string" value="/dev/ttyUSB0"/>
+	</node>
+
+	<node pkg="hokuyo_node" type="hokuyo_node" name="hokuyo_node">
+		
+		<param name="serial_port" value="/dev/ttyACM0"/>
+		<param name="angle_min" type="double" value="-2.09"/>
+		<param name="angle_max" type="double" value="2.09"/>
+		
+	</node>
+
+	<include file="$(find p2os_urdf)/launch/pioneer3dx_urdf.launch"/>
+
+	<node pkg="tf" type="static_transform_publisher" name="hokuyo_link" args="0 0 0.1397 0 0 0 base_link laser 100"/>
+	
+	<include file="$(find nav_bundle)/launch/amcl_pioneer.launch"/>
+	
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find pioneer_2dnav)/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find pioneer_2dnav)/costmap_common_params.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find pioneer_2dnav)/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pioneer_2dnav)/global_costmap_params.yaml" command="load" />
+    <rosparam file="$(find pioneer_2dnav)/base_local_planner_params.yaml" command="load" />
+  </node>
+
+    <node pkg="uvc_camera" type="uvc_camera_node" name="mycam"/>
+
+    <node pkg="image_proc" type="image_proc" name="imageprocess"/>
+
+    <node pkg="apriltags_ros" type="apriltag_detector_node" name="apriltag_detector" output="screen">
+	    <rosparam param="tag_descriptions">
+[{id: 0, size: 0.163513},
+{id: 1, size: 0.163513, frame_id: a_frame},
+{id: 2, size: 0.163513},
+{id: 3, size: 0.163513},
+{id: 4, size: 0.163513},
+{id: 5, size: 0.163513}]</rosparam>
+	</node>
+
+    <node pkg="rviz" type="rviz" name="visulization"/>
+
+    <node name="map_server" pkg="map_server" type="map_server" args="$(find beginner_tutorials)/map/map.yaml"/>
+
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera" args="0 0 0.3 -1.57 0 -1.57 base_link camera 100"/>
+</launch>
