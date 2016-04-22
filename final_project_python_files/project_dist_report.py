@@ -35,9 +35,9 @@ class ReportGenerator:
         #setup for publishers and subscribers
         self.pub = rospy.Publisher('dist_rep', String, queue_size=1)
         rospy.init_node('Report', anonymous=True)
-        self.sub = rospy.Subscriber('target/odom', Odometry, self.tCallback)
-        self.sub = rospy.Subscriber('h0/odom', Odometry, self.h0Callback)
-        self.sub = rospy.Subscriber('h1/odom', Odometry, self.h1Callback)
+        self.sub = rospy.Subscriber('robot_2/odom', Odometry, self.tCallback)
+        self.sub = rospy.Subscriber('robot_0/odom', Odometry, self.h0Callback)
+        self.sub = rospy.Subscriber('robot_1/odom', Odometry, self.h1Callback)
 
         #periodically computes and publishes distances
         rate = rospy.Rate(10)
@@ -46,7 +46,7 @@ class ReportGenerator:
             if None in [self.t_loc,self.h0_loc,self.h1_loc]:
                 continue
             (dist_0,dist_1) = self.computeDistances()
-            dist_msg = dist_0+" "+dist_1
+            dist_msg = str(dist_0)+" "+str(dist_1)
             self.pub.publish(dist_msg)
 
 if __name__ == '__main__':

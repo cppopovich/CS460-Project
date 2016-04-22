@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import math
+import rospy
 from nav_msgs.msg import Odometry
 from std_msgs.msg import String
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
@@ -72,7 +73,7 @@ class NaiveHunterAI:
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('', anonymous=False)
+        rospy.init_node('naive', anonymous=False)
         ai = NaiveHunterAI()
         rospy.spin()
     except rospy.ROSInterruptException:
