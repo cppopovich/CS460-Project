@@ -9,14 +9,15 @@ import actionlib
 from actionlib_msgs.msg import *
 from geometry_msgs.msg import Pose, Point, Quaternion
 
-#Moves directly towards target.
-#Initially may guess where target is.
-class NaiveHunterAI:
+class CoopHunterAI:
 
     def __init__(self):
-        self.t_loc = Point(0,0,0)
+        self.t_loc = None
+        self.t_loc1 = Point(0,0,0)
+        self.t_loc2 = Point(0,0,0)
         self.h0_loc = None
         self.h1_loc = None
+        self.state = 1
         self.goal_sent = False
         rospy.on_shutdown(self.shutdown)
         self.move_base = actionlib.SimpleActionClient("move_base", MoveBaseAction)
@@ -31,11 +32,50 @@ class NaiveHunterAI:
         self.d0 = float(dList[0])
         self.d1 = float(dList[1])
         (p1,p2) = self.triangulate()
-        #Choose point closest to previous target location
-        if distance(p1,self.t_loc) < distance(p2,self.t_loc):
-            self.t_loc = p1
-        else:
-            self.t_loc = p2
+        ###Decide where to move
+        if state is 1:
+            #Not sure which triangulated point
+            # is correct.
+            self.t_loc1 = p1
+            self.t_loc2 = p2
+            if distance(p1,self.t_loc1) < distance(p1,self.t_loc2):
+                self.t_loc1 = p1
+                self.t_loc2 = p2
+            else:
+                self.t_loc1 = p2
+                self.t_loc2 = p1
+            #TODO check if correct location is found
+        if state is 2:
+            #found correct location
+            #Commence surrounding process
+
+            #check for correct triangulated point
+            if distance(p1,self.t_loc) < distance(p2,self.t_loc):
+                new_loc = p1
+            else:
+                new_loc = p2
+            #test if close enough to move to state 3
+            if distance(new_loc,self.t_loc) < min(self.d0,self.d1):
+                state = 3
+                self.t_loc = new_loc
+            else:
+                dx = new_loc.x - self.t_loc.x
+                dy = new_loc.y - self.t_loc.y
+                self.t_loc = new_loc
+                self.t_loc1.x = self.t_loc.x + dx
+                self.t_loc1.y = self.t_loc.y + dy
+                self.t_loc2.x = self.t_loc.x - dx
+                self.t_loc2.y = self.t_loc.y - dy
+        if state is 3:
+            #Close enough to move directly towards target
+            if distance(p1,self.t_loc) < distance(p2,self.t_loc):
+                self.t_loc = p1
+            else:
+                self.t_loc = p2
+        ##
+        #TODO modify to send goals to both robots
+        #TODO if state is 1 or 2, move to t_loc1 and t_loc2
+        #     if state is 3, move both to t_loc
         self.goal_sent = True
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = 'map'
@@ -76,8 +116,8 @@ class NaiveHunterAI:
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('naive', anonymous=False)
-        ai = NaiveHunterAI()
+        rospy.init_node('coop', anonymous=False)
+        ai = CoopHunterAI()
         rospy.spin()
     except rospy.ROSInterruptException:
         rospy.loginfo("Ctrl-C caught. Quitting")
