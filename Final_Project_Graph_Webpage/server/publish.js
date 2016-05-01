@@ -1,3 +1,3 @@
 Meteor.publish('getSimulationRuns', function() {
-  return Simulations.find({});
+  return Simulations.find({ });
 });

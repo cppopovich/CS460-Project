@@ -1,9 +1,91 @@
 <template name="homepage">
-  {{#each getSimData}}
-  <p>
-    {{node_name}}
-    {{position_array}}
-    {{run_number}}
-    {{time}}</p>
-  {{/each}}
+  <select id="mapSelect">
+    <option>simple</option>
+    <option>dense</option>
+  </select>
+
+  <select id="selectAlgorithm">
+    <option>naive</option>
+    <option>coop</option>
+  </select>
+
+  <select id="selectStartNum">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    <option>5</option>
+    <option>6</option>
+    <option>7</option>
+    <option>8</option>
+    <option>9</option>
+    <option>10</option>
+  </select>
+
+
+  <table>
+       <caption>Data Table</caption>
+        <tbody>
+        <tr>
+          <th>Map</th>
+          <th>Type</th>
+          <th>Speed</th>
+          <th colspan="3">Prey</th>
+          <th colspan="3">Robot 1</th>
+          <th colspan="3">Robot 2</th>
+          <th>distance 1</th>
+          <th>distance 2</th>
+          <th>startNo</th>
+          <th>start_time</th>
+          <th>end_time</th>
+          <th>hunters_win</th>
+          <th>found_ping</th>
+        </tr>
+        {{#each getSimData}}
+          <tr>
+            <td>{{map}}</td>
+            <td>{{type}}</td>
+            <td>{{speed}}</td>
+            <td>{{prey_pose.x}}</td>
+            <td>{{prey_pose.y}}</td>
+            <td>{{prey_pose.z}}</td>
+            <td>{{rob1_pose.x}}</td>
+            <td>{{rob1_pose.y}}</td>
+            <td>{{rob1_pose.z}}</td>
+            <td>{{rob2_pose.x}}</td>
+            <td>{{rob2_pose.y}}</td>
+            <td>{{rob2_pose.z}}</td>
+            <td>{{dist1}}</td>
+            <td>{{dist2}}</td>
+            <td>{{startno}}</td>
+            <td>{{start_time}}</td>
+            <td>{{end_time}}</td>
+            <td>{{hunters_win}}</td>
+            <td>{{found_ping}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  <!-- {{#each getSimData}}
+    <p>map: {{map}}</p>
+    <p>type: {{type}}</p>
+    <p>speed: {{speed}}</p>
+    <p>prey_pose.x: {{prey_pose.x}}</p>
+    <p>prey_pose.y: {{prey_pose.y}}</p>
+    <p>prey_pose.z: {{prey_pose.z}}</p>
+    <p>rob1_pose.x: {{rob1_pose.x}}</p>
+    <p>rob1_pose.y: {{rob1_pose.y}}</p>
+    <p>rob1_pose.z: {{rob1_pose.z}}</p>
+    <p>rob2_pose.x: {{rob2_pose.x}}</p>
+    <p>rob2_pose.y: {{rob2_pose.y}}</p>
+    <p>rob2_pose.z: {{rob2_pose.z}}</p>
+    <p>dist1: {{dist1}}</p>
+    <p>dist2: {{dist2}}</p>
+    <p>startno: {{startno}}</p>
+    <p>start_time: {{start_time}}</p>
+    <p>end_time: {{end_time}}</p>
+    <p>hunters_win: {{hunters_win}}</p>
+    <p>found_ping: {{found_ping}}</p>
+    <hr />
+  {{/each}} -->
 </template>

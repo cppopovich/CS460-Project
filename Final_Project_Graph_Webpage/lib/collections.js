@@ -1,1 +1,1 @@
-Simulations = new Mongo.Collection('simulationRuns');
+Simulations = new Mongo.Collection('end_data');

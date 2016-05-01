@@ -2,3 +2,15 @@
   Copyright: Anupriya, Christian, Christopher, William
   Description: Very basic style sheet for our CS460 Project
 */
+
+.bold {
+    font-weight: bold;
+}
+
+th, td {
+    border: 2px solid #000000;
+    padding: 3px;
+}
+table {
+    border-collapse: collapse;
+}
